@@ -1,3 +1,142 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ---------- Neon animated background ---------- */
+:root{
+  --bg1: #0f172a; /* dark */
+  --bg2: #071326; /* darker blue */
+  --neon1: rgba(94, 255, 212, 0.12);
+  --neon2: rgba(99, 102, 241, 0.10);
+  --accent: #7efc7e;
+}
+
+/* full-screen animated gradient */
+html,body,#__next {
+  height: 100%;
+  margin:0;
+}
+body {
+  background: radial-gradient(1200px 600px at 10% 20%, rgba(99,102,241,0.06), transparent 10%),
+              radial-gradient(900px 500px at 90% 80%, rgba(14,165,233,0.03), transparent 10%),
+              linear-gradient(180deg, var(--bg1), var(--bg2));
+  color: #e6eef8;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  overflow-x:hidden;
+}
+
+/* moving subtle noise & glow overlay */
+.body-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(126,252,126,0.02), transparent 10%),
+    radial-gradient(circle at 90% 80%, rgba(126,143,252,0.02), transparent 10%);
+  mix-blend-mode: screen;
+  z-index: 0;
+  animation: overlayMove 18s linear infinite;
+}
+@keyframes overlayMove{
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-6%) scale(1.03); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+/* Main container sits above background */
+.app-shell {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3.5rem 1rem;
+}
+
+/* Neon heading */
+.neon-title {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  font-size: 2.1rem;
+  color: #eafff0;
+  text-shadow:
+    0 0 6px rgba(126,252,126,0.12),
+    0 0 16px rgba(126,252,126,0.08),
+    0 2px 18px rgba(0,0,0,0.6);
+}
+.neon-sub {
+  color: rgba(226,238,248,0.8);
+  margin-top: .25rem;
+}
+
+/* Card style for UI */
+.glass-card {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  border: 1px solid rgba(255,255,255,0.04);
+  backdrop-filter: blur(8px) saturate(120%);
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 30px rgba(2,6,23,0.6);
+}
+
+/* Buttons */
+.btn-primary {
+  background: linear-gradient(90deg, rgba(99,102,241,1), rgba(14,165,233,1));
+  color: white;
+  padding: .55rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 6px 30px rgba(14,165,233,0.08);
+  border: none;
+}
+.btn-primary:hover { transform: translateY(-2px); }
+
+/* ---------- Cursor trail styles ---------- */
+.cursor-trail {
+  position: fixed;
+  left:0;
+  top:0;
+  pointer-events: none;
+  z-index: 999999;
+  mix-blend-mode: screen;
+}
+
+/* each dot */
+.trail-dot {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(126,252,126,0.95));
+  box-shadow: 0 0 10px rgba(126,252,126,0.9), 0 0 22px rgba(99,102,241,0.18);
+  opacity: 0.95;
+  will-change: transform, opacity;
+}
+
+/* name label near cursor */
+.cursor-name {
+  position: absolute;
+  transform: translate(-50%, -140%);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(0,0,0,0.45), rgba(255,255,255,0.03));
+  border: 1px solid rgba(255,255,255,0.06);
+  color: #eafff0;
+  text-shadow: 0 2px 18px rgba(0,0,0,0.6);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+}
+
+/* small responsive adjustments */
+@media (max-width:640px){
+  .neon-title { font-size: 1.6rem; }
+  .trail-dot { width: 8px; height:8px; }
+  .cursor-name { display: none; } /* hide label on small screens */
+}
