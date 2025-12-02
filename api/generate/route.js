@@ -4,10 +4,6 @@ export async function POST(req) {
   try {
     const { prompt } = await req.json();
 
-    if (!prompt) {
-      return new Response(JSON.stringify({ error: "Missing prompt" }), { status: 400 });
-    }
-
     const client = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
@@ -15,17 +11,18 @@ export async function POST(req) {
     const result = await client.images.generate({
       model: "gpt-image-1",
       prompt,
-      size: "1024x1024"
+      size: "1024x1024",
     });
 
-    const image_base64 = result.data[0].b64_json;
+    return new Response(
+      JSON.stringify({ image: result.data[0].url }),
+      { status: 200 }
+    );
 
-    return new Response(JSON.stringify({ image: image_base64 }), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
+  } catch (err) {
+    console.error("API ERROR:", err);
+    return new Response(JSON.stringify({ error: "Failed to generate image" }), {
+      status: 500,
     });
-
-  } catch (error) {
-    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 }
