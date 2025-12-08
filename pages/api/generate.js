@@ -1,33 +1,34 @@
-import axios from "axios";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 export default async function handler(req, res) {
-  if (req.method !== "POST") return res.status(405).end();
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
 
   const { prompt } = req.body;
 
-  if (!prompt) return res.status(400).json({ error: "Prompt is required" });
+  if (!prompt) {
+    return res.status(400).json({ error: "Prompt is required" });
+  }
 
   try {
-    const response = await axios.post(
-      "https://api.openai.com/v1/images/generations",
-      {
-        prompt,
-        n: 3,
-        size: "512x512"
-      },
-      {
-        headers: {
-          "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`,
-          "Content-Type": "application/json"
-        }
-      }
-    );
+    const response = await client.images.generate({
+      model: "gpt-image-1",
+      prompt,
+      size: "512x512",
+      n: 3
+    });
 
-    const images = response.data.data.map(item => item.url);
-    res.status(200).json({ images });
+    const images = response.data.map(img => img.url);
 
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-    res.status(500).json({ error: "Failed to generate images" });
+    return res.status(200).json({ images });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Failed to generate images" });
   }
 }
+
