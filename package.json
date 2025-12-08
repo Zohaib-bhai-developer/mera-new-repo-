@@ -1,10 +1,7 @@
-{
-  "name": "mera-new-repo",
-  "version": "1.0.0",
-  "dependencies": {
-    "next": "latest",
-    "react": "latest",
-    "react-dom": "latest",
-    "openai": "^4.0.0"
-  }
+"dependencies": {
+  "next": "14.2.3",
+  "react": "18.2.0",
+  "react-dom": "18.2.0",
+  "openai": "^4.20.0",
+  "axios": "^1.6.0"
 }
